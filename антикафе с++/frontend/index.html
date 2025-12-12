@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Антикафе Чилл - Бронирование</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        h1 { 
+            color: #2c3e50; 
+            margin-bottom: 10px; 
+            text-align: center;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #3498db, #2c3e50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        h2 { 
+            color: #34495e; 
+            margin: 30px 0 20px; 
+            border-bottom: 3px solid #3498db; 
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i { color: #3498db; }
+        
+        .tariff { 
+            background: linear-gradient(145deg, #ffffff, #f0f3f5);
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 12px; 
+            border-left: 5px solid #3498db;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .tariff:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .tariff h3 { color: #2980b9; margin-bottom: 10px; }
+        
+        .booking-form { 
+            background: #f8f9fa; 
+            padding: 30px; 
+            border-radius: 15px; 
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-row { 
+            display: flex; 
+            gap: 20px; 
+            margin-bottom: 20px; 
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+        
+        .form-group { 
+            flex: 1; 
+            margin-bottom: 20px; 
+        }
+        
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #2c3e50; 
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        button { 
+            background: linear-gradient(45deg, #3498db, #2980b9); 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button:hover { 
+            background: linear-gradient(45deg, #2980b9, #1c6ea4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #7f8c8d, #6c7b7d);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #27ae60, #219653);
+        }
+        
+        .btn-success:hover {
+            background: linear-gradient(45deg, #219653, #1e8449);
+        }
+        
+        .result { 
+            margin-top: 20px; 
+            padding: 20px; 
+            border-radius: 10px; 
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .success { 
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+            color: #155724; 
+            border: 2px solid #c3e6cb;
+            display: block;
+        }
+        
+        .error { 
+            background: linear-gradient(145deg, #f8d7da, #f5c6cb);
+            color: #721c24; 
+            border: 2px solid #f5c6cb;
+            display: block;
+        }
+        
+        .booking-list { 
+            margin-top: 40px; 
+        }
+        
+        .booking-item { 
+            background: white; 
+            border: 1px solid #e0e0e0; 
+            padding: 20px; 
+            margin: 15px 0; 
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .booking-item:hover {
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        nav { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 30px; 
+            background: linear-gradient(45deg, #2c3e50, #34495e); 
+            padding: 15px 20px; 
+            border-radius: 12px;
+            flex-wrap: wrap;
+        }
+        
+        nav a { 
+            color: white; 
+            text-decoration: none; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        nav a:hover { 
+            background: rgba(52, 152, 219, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        nav a.active {
+            background: #3498db;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        footer { 
+            margin-top: 50px; 
+            text-align: center; 
+            color: #7f8c8d; 
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .cafe-info { 
+            background: #e8f4f8; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 10px; 
+            display: none;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+        
+        .cafe-info p { margin: 8px 0; }
+        
+        .phone-hint { 
+            font-size: 12px; 
+            color: #666; 
+            margin-top: 5px; 
+            margin-left: 5px;
+        }
+        
+        .duration-display { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: #e8f4f8; 
+            border-radius: 8px; 
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .duration-value { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin: 5px 0;
+        }
+        
+        .duration-label { 
+            font-size: 14px; 
+            color: #666; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .cost-display {
+            margin-top: 15px;
+            padding: 20px;
+            background: linear-gradient(145deg, #e8f6f3, #d1f2eb);
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s;
+            border: 2px solid #a3e4d7;
+        }
+        
+        .cost-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 5px 0;
+        }
+        
+        .cost-label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .user-cabinet {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            animation: fadeIn 0.5s;
+        }
+        
+        .cabinet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .cabinet-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        
+        .cabinet-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .bonus-display {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .subscription-card {
+            background: linear-gradient(145deg, #e8f6f3, #d1f2eb);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .history-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 8px 0;
+            border-left: 3px solid #3498db;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid #3498db;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .feature-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .new-badge {
+            background: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .close-modal {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .subscription-option {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subscription-option:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+        
+        .subscription-option.selected {
+            border-color: #27ae60;
+            background: #e8f6f3;
+        }
+        
+        .subscription-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 10px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-coffee"></i> Антикафе "Чилл"</h1>
+        <div class="subtitle">Бронирование мест • Личный кабинет • Абонементы • Бонусы</div>
+        
+        <nav>
+            <a href="#main" class="active"><i class="fas fa-home"></i> Главная</a>
+            <a href="#booking"><i class="fas fa-calendar-check"></i> Бронирование</a>
+            <a href="#tariffs"><i class="fas fa-tags"></i> Тарифы</a>
+            <a href="#cabinet"><i class="fas fa-user-circle"></i> Личный кабинет</a>
+            <a href="#contacts"><i class="fas fa-phone"></i> Контакты</a>
+        </nav>
+        
+        <div id="main">
+            <h2><i class="fas fa-star"></i> Добро пожаловать!</h2>
+            <p>Забронируйте место для работы, встречи или отдыха. У нас есть Wi-Fi, напитки и уютная атмосфера.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Посетителей сегодня</div>
+                    <div class="stat-value">42</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Свободных мест</div>
+                    <div class="stat-value">18</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Средний чек</div>
+                    <div class="stat-value">850 ₽</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Бонусов начислено</div>
+                    <div class="stat-value">1,250</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="tariffs">
+            <h2><i class="fas fa-crown"></i> Наши тарифы <span class="feature-badge new-badge">Новый</span></h2>
+            <div id="tariffs-list" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Загрузка тарифов...</p>
+            </div>
+        </div>
+        
+        <div id="booking">
+            <h2><i class="fas fa-bookmark"></i> Бронирование места</h2>
+            <div class="booking-form">
+                <!-- Выбор антикафе -->
+                <div class="form-group">
+                    <label><i class="fas fa-store"></i> Выберите антикафе:</label>
+                    <select id="cafe" onchange="showCafeInfo()">
+                        <option value="">-- Выберите антикафе --</option>
+                        <option value="1">Чилл на Воскресенской</option>
+                        <option value="2">Чилл на Центральной</option>
+                        <option value="3">Чилл на Парковой</option>
+                    </select>
+                    <div id="cafeInfo" class="cafe-info"></div>
+                </div>
+                
+                <!-- Контактные данные -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Ваше имя:</label>
+                        <input type="text" id="name" placeholder="Иван Петров">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Телефон:</label>
+                        <input type="tel" id="phone" placeholder="+79123456789">
+                        <div class="phone-hint">Формат: +79123456789</div>
+                    </div>
+                </div>
+                
+                <!-- Дата -->
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> Дата посещения:</label>
+                    <input type="date" id="date">
+                </div>
+                
+                <!-- Время начала и окончания -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label><i class="fas fa-clock"></i> Время начала:</label>
+                        <select id="startTime" onchange="calculateDuration()">
+                            <option value="">-- Выберите время --</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-clock"></i> Время окончания:</label>
+                        <select id="endTime" onchange="calculateDuration()">
+                            <option value="">-- Выберите время --</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Продолжительность посещения -->
+                <div id="durationDisplay" class="duration-display" style="display: none;">
+                    <div class="duration-label">Продолжительность посещения:</div>
+                    <div class="duration-value" id="durationValue">0 часов</div>
+                </div>
+                
+                <!-- Количество гостей -->
+                <div class="form-group">
+                    <label><i class="fas fa-users"></i> Количество гостей:</label>
+                    <select id="guests">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10+</option>
+                    </select>
+                </div>
+                
+                <!-- Тарифы -->
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Тариф:</label>
+                    <select id="tariff" onchange="calculateCost()">
+                        <option value="">-- Выберите тариф --</option>
+                        <option value="250">Почасовой - 250 руб./час</option>
+                        <option value="1500">Весь день - 1500 руб.</option>
+                        <option value="5000">Месячный абонемент - 5000 руб.</option>
+                        <option value="9000">Месячный абонемент Премиум - 9000 руб.</option>
+                    </select>
+                </div>
+                
+                <!-- Стоимость -->
+                <div id="costDisplay" class="cost-display" style="display: none;">
+                    <div class="cost-label">Расчетная стоимость:</div>
+                    <div class="cost-value" id="costValue">0 руб.</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">*С учетом возможных скидок и бонусов</div>
+                </div>
+                
+                <!-- Комментарий -->
+                <div class="form-group">
+                    <label><i class="fas fa-comment"></i> Комментарий (необязательно):</label>
+                    <textarea id="comment" rows="3" placeholder="Особые пожелания, выбор места и т.д."></textarea>
+                </div>
+                
+                <button id="bookButton">
+                    <i class="fas fa-check-circle"></i> Забронировать
+                </button>
+                
+                <div id="result" class="result"></div>
+            </div>
+        </div>
+        
+        <div id="cabinet-section" class="user-cabinet">
+            <!-- Личный кабинет загружается через JavaScript -->
+        </div>
+        
+        <div class="booking-list">
+            <h2><i class="fas fa-history"></i> Последние бронирования</h2>
+            <div id="bookings" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Загрузка истории бронирований...</p>
+            </div>
+        </div>
+        
+        <div id="contacts">
+            <h2><i class="fas fa-map-marker-alt"></i> Контакты</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <h3><i class="fas fa-phone"></i> Телефоны</h3>
+                    <p>Основной: +7 (888) 888-88-88</p>
+                    <p>Бронирование: +7 (888) 777-77-77</p>
+                    <p>WhatsApp: +7 (888) 666-66-66</p>
+                </div>
+                <div>
+                    <h3><i class="fas fa-clock"></i> Часы работы</h3>
+                    <p>Пн-Пт: 10:00 - 22:00</p>
+                    <p>Сб-Вс: 10:00 - 23:00</p>
+                    <p>Без перерывов</p>
+                </div>
+                <div>
+                    <h3><i class="fas fa-map-pin"></i> Адреса</h3>
+                    <p>ул. Воскресенская, 8</p>
+                    <p>ул. Центральная, 25</p>
+                    <p>ул. Парковой, 12</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Антикафе "Чилл" © 2024 | Все права защищены</p>
+            <p><i class="fas fa-server"></i> - <i class="fas fa-globe"></i> Версия 2.0</p>
+        </footer>
+    </div>
+    
+    <!-- Модальное окно для покупки абонемента -->
+    <div id="subscriptionModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2><i class="fas fa-crown"></i> Покупка абонемента</h2>
+            <div id="subscriptionOptions">
+                <!-- Опции абонементов загружаются динамически -->
+            </div>
+            <button class="btn-success" onclick="purchaseSelectedSubscription()" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-shopping-cart"></i> Купить абонемент
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Конфигурация
+        const API_URL = 'http://localhost:8080';
+        let selectedSubscription = null;
+        
+        // Данные кафе для быстрого доступа
+        const cafesData = {
+            "1": {
+                name: "Чилл на Воскресенской",
+                address: "ул. Воскресенская, 8",
+                phone: "+7 (888) 888-88-88",
+                capacity: "до 30 человек",
+                description: "Основное кафе, 2 этажа, тихая зона и игровая",
+                workHours: "10:00-22:00"
+            },
+            "2": {
+                name: "Чилл на Центральной",
+                address: "ул. Центральная, 25",
+                phone: "+7 (888) 777-77-77",
+                capacity: "до 20 человек",
+                description: "Центр города, бизнес-ланчи, конференц-зал",
+                workHours: "10:00-22:00"
+            },
+            "3": {
+                name: "Чилл на Парковой",
+                address: "ул. Парковой, 12",
+                phone: "+7 (888) 666-66-66",
+                capacity: "до 25 человек",
+                description: "Рядом с парком, летняя веранда, настольные игры",
+                workHours: "10:00-22:00"
+            }
+        };
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница загружена. API URL:', API_URL);
+            
+            // Настройка минимальной даты
+            setMinDate();
+            
+            // Загрузка данных с сервера
+            loadTariffs();
+            loadCafes();
+            loadUserCabinet();
+            
+            // Настройка обработчиков событий
+            setupEventListeners();
+            
+            // Настройка навигации
+            setupNavigation();
+            
+            // Тест соединения с сервером
+            testServerConnection();
+        });
+        
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            const bookButton = document.getElementById('bookButton');
+            if (bookButton) {
+                bookButton.addEventListener('click', createBooking);
+            }
+            
+            // Обработчики для расчета времени
+            document.getElementById('startTime').addEventListener('change', function() {
+                updateEndTimeOptions();
+                calculateDuration();
+                calculateCost();
+            });
+            
+            document.getElementById('endTime').addEventListener('change', function() {
+                calculateDuration();
+                calculateCost();
+            });
+            
+            document.getElementById('tariff').addEventListener('change', calculateCost);
+        }
+        
+        // Настройка навигации
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Убираем активный класс у всех ссылок
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Добавляем активный класс текущей ссылке
+                    this.classList.add('active');
+                    
+                    const targetId = this.getAttribute('href').substring(1);
+                    
+                    if (targetId === 'cabinet') {
+                        toggleUserCabinet();
+                    } else {
+                        // Прячем кабинет если он открыт
+                        const cabinet = document.getElementById('cabinet-section');
+                        if (cabinet) {
+                            cabinet.style.display = 'none';
+                        }
+                        
+                        // Прокрутка к секции
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Тест соединения с сервером
+        async function testServerConnection() {
+            try {
+                const response = await fetch(`${API_URL}/api/test`);
+                if (response.ok) {
+                    console.log('✅ Соединение с сервером установлено');
+                } else {
+                    console.warn('⚠️ Сервер ответил с ошибкой:', response.status);
+                }
+            } catch (error) {
+                console.error('❌ Ошибка соединения с сервером:', error);
+                showResult('Не удалось подключиться к серверу. Убедитесь, что сервер запущен.', 'error');
+            }
+        }
+        
+        // Загрузка тарифов
+        async function loadTariffs() {
+            const container = document.getElementById('tariffs-list');
+            if (!container) return;
+            
+            showLoading(container, 'Загрузка тарифов...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/tariffs`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    displayTariffs(data.data);
+                } else {
+                    showError(container, 'Ошибка загрузки тарифов');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки тарифов:', error);
+                showError(container, 'Ошибка загрузки тарифов');
+            }
+        }
+        
+        // Отображение тарифов
+        function displayTariffs(tariffs) {
+            const container = document.getElementById('tariffs-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            tariffs.forEach(tariff => {
+                const div = document.createElement('div');
+                div.className = 'tariff';
+                
+                let badge = '';
+                let button = '';
+                
+                if (tariff.type === 'subscription') {
+                    badge = '<span class="feature-badge new-badge">Абонемент</span>';
+                    button = `<button onclick="openSubscriptionModal('${tariff.id}', '${tariff.name}', ${tariff.price})" class="btn-success" style="margin-top: 10px;">
+                                <i class="fas fa-shopping-cart"></i> Купить абонемент
+                              </button>`;
+                }
+                
+                div.innerHTML = `
+                    <h3>${tariff.name} ${badge}</h3>
+                    <p>${tariff.description}</p>
+                    <p><strong>${tariff.price} руб.</strong></p>
+                    ${button}
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+        
+        // Загрузка кафе
+        async function loadCafes() {
+            try {
+                const response = await fetch(`${API_URL}/api/cafes`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Обновляем данные кафе
+                    data.data.forEach(cafe => {
+                        cafesData[cafe.id] = cafe;
+                    });
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки кафе:', error);
+            }
+        }
+        
+        // Загрузка личного кабинета
+        async function loadUserCabinet() {
+            const container = document.getElementById('cabinet-section');
+            if (!container) return;
+            
+            showLoading(container, 'Загрузка личного кабинета...');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/cabinet`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    displayUserCabinet(data.data);
+                } else {
+                    showError(container, 'Ошибка загрузки личного кабинета');
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки кабинета:', error);
+                showError(container, 'Ошибка загрузки личного кабинета');
+            }
+        }
+        
+        // Отображение личного кабинета
+        function displayUserCabinet(userData) {
+            const container = document.getElementById('cabinet-section');
+            if (!container) return;
+            
+            // Форматирование даты
+            const formatDate = (dateStr) => {
+                return dateStr; // В реальном приложении можно форматировать
+            };
+            
+            // Генерация HTML для абонементов
+            let subscriptionsHtml = '';
+            if (userData.subscriptions && userData.subscriptions.length > 0) {
+                userData.subscriptions.forEach(sub => {
+                    subscriptionsHtml += `
+                        <div class="subscription-card">
+                            <h4>${sub.type}</h4>
+                            <p><i class="fas fa-calendar"></i> Действует до: ${formatDate(sub.end_date)}</p>
+                            <p><i class="fas fa-clock"></i> Осталось часов: ${sub.remaining_hours}</p>
+                            <p><i class="fas fa-circle" style="color: ${sub.is_active ? '#27ae60' : '#e74c3c'}; font-size: 12px;"></i> Статус: ${sub.is_active ? 'Активен' : 'Не активен'}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                subscriptionsHtml = '<p>Нет активных абонементов</p>';
+            }
+            
+            // Генерация HTML для истории
+            let historyHtml = '';
+            if (userData.booking_history && userData.booking_history.length > 0) {
+                userData.booking_history.forEach(booking => {
+                    historyHtml += `
+                        <div class="history-item">
+                            <p><strong>${booking.cafe}</strong></p>
+                            <p>Дата: ${formatDate(booking.date)} | ${booking.duration} ч. | ${booking.amount} руб.</p>
+                        </div>
+                    `;
+                });
+            } else {
+                historyHtml = '<p>Нет истории бронирований</p>';
+            }
+            
+            container.innerHTML = `
+                <h2><i class="fas fa-user-circle"></i> Личный кабинет</h2>
+                <div class="cabinet-grid">
+                    <div class="cabinet-section">
+                        <h3><i class="fas fa-user"></i> Информация</h3>
+                        <p><strong>Имя:</strong> ${userData.name}</p>
+                        <p><strong>Email:</strong> ${userData.email}</p>
+                        <p><strong>Телефон:</strong> ${userData.phone}</p>
+                        <p><strong>Дата регистрации:</strong> ${formatDate(userData.registration_date)}</p>
+                    </div>
+                    
+                    <div class="cabinet-section">
+                        <h3><i class="fas fa-gift"></i> Бонусная система</h3>
+                        <div class="bonus-display">
+                            <div class="stat-value">${userData.bonus_system.points}</div>
+                            <div class="stat-label">Бонусных очков</div>
+                        </div>
+                        <p><strong>Баланс:</strong> ${userData.bonus_system.balance} руб.</p>
+                        <p><small>1 бонус = 0.1 рубля</small></p>
+                        <button class="btn-secondary" onclick="useBonuses()" style="margin-top: 10px;">
+                            <i class="fas fa-coins"></i> Использовать бонусы
+                        </button>
+                    </div>
+                    
+                    <div class="cabinet-section">
+                        <h3><i class="fas fa-crown"></i> Абонементы</h3>
+                        ${subscriptionsHtml}
+                        <button onclick="openSubscriptionModal()" style="margin-top: 15px;">
+                            <i class="fas fa-plus"></i> Купить новый абонемент
+                        </button>
+                    </div>
+                    
+                    <div class="cabinet-section">
+                        <h3><i class="fas fa-history"></i> История бронирований</h3>
+                        ${historyHtml}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Показать/скрыть личный кабинет
+        function toggleUserCabinet() {
+            const cabinet = document.getElementById('cabinet-section');
+            const navLinks = document.querySelectorAll('nav a');
+            
+            if (cabinet.style.display === 'block') {
+                cabinet.style.display = 'none';
+                navLinks.forEach(link => link.classList.remove('active'));
+                document.querySelector('nav a[href="#main"]').classList.add('active');
+            } else {
+                cabinet.style.display = 'block';
+                cabinet.scrollIntoView({ behavior: 'smooth' });
+                loadUserCabinet();
+            }
+        }
+        
+        // Создание бронирования
+        async function createBooking() {
+            // Собираем данные из формы
+            const cafeSelect = document.getElementById('cafe');
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const date = document.getElementById('date').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const guests = document.getElementById('guests').value;
+            const tariffSelect = document.getElementById('tariff');
+            const comment = document.getElementById('comment').value.trim();
+            
+            // Валидация
+            if (!validateBookingForm()) {
+                return;
+            }
+            
+            // Расчет продолжительности
+            const startHour = parseInt(startTime.split(':')[0]);
+            const endHour = parseInt(endTime.split(':')[0]);
+            const duration = endHour - startHour;
+            
+            // Создаем объект бронирования
+            const bookingData = {
+                cafe_id: cafeSelect.value,
+                name: name,
+                phone: phone,
+                date: date,
+                start_time: startTime,
+                end_time: endTime,
+                duration: duration,
+                guests: parseInt(guests),
+                tariff_id: tariffSelect.value,
+                comment: comment
+            };
+            
+            // Показываем загрузку
+            const bookButton = document.getElementById('bookButton');
+            const originalText = bookButton.innerHTML;
+            bookButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Обработка...';
+            bookButton.disabled = true;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/bookings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showResult(`
+                        <h3><i class="fas fa-check-circle"></i> Бронь создана успешно!</h3>
+                        <p><strong>Номер брони:</strong> #${result.booking_id}</p>
+                        <p><strong>Кафе:</strong> ${cafesData[cafeSelect.value]?.name || 'Не указано'}</p>
+                        <p><strong>Дата:</strong> ${date} с ${startTime} до ${endTime}</p>
+                        <p><strong>Продолжительность:</strong> ${duration} ч.</p>
+                        <p><strong>Стоимость:</strong> ${result.amount || calculateCost(duration)} руб.</p>
+                        <p><strong>Статус:</strong> Подтверждено</p>
+                        <p>Мы отправили детали брони на ваш телефон ${phone}</p>
+                    `, 'success');
+                    
+                    // Обновляем личный кабинет
+                    loadUserCabinet();
+                    
+                    // Очищаем форму
+                    clearForm();
+                } else {
+                    showResult(`<i class="fas fa-exclamation-triangle"></i> ${result.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Ошибка создания брони:', error);
+                showResult('<i class="fas fa-exclamation-triangle"></i> Ошибка соединения с сервером', 'error');
+            } finally {
+                // Восстанавливаем кнопку
+                bookButton.innerHTML = originalText;
+                bookButton.disabled = false;
+            }
+        }
+        
+        // Валидация формы бронирования
+        function validateBookingForm() {
+            const cafeSelect = document.getElementById('cafe');
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const date = document.getElementById('date').value;
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const tariffSelect = document.getElementById('tariff');
+            
+            let errors = [];
+            
+            if (!cafeSelect.value) errors.push('Выберите антикафе');
+            if (!name) errors.push('Введите ваше имя');
+            if (!phone) errors.push('Введите телефон');
+            if (phone && (phone.length !== 12 || !phone.startsWith('+7'))) {
+                errors.push('Телефон должен быть в формате +79123456789');
+            }
+            if (!date) errors.push('Выберите дату');
+            if (!startTime) errors.push('Выберите время начала');
+            if (!endTime) errors.push('Выберите время окончания');
+            if (!tariffSelect.value) errors.push('Выберите тариф');
+            
+            if (startTime && endTime) {
+                const startHour = parseInt(startTime.split(':')[0]);
+                const endHour = parseInt(endTime.split(':')[0]);
+                if (endHour <= startHour) {
+                    errors.push('Время окончания должно быть позже времени начала');
+                }
+            }
+            
+            if (errors.length > 0) {
+                showResult(`<i class="fas fa-exclamation-triangle"></i> ${errors.join('<br>')}`, 'error');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Покупка абонемента
+        async function purchaseSubscription(subscriptionId, subscriptionName, price) {
+            try {
+                const response = await fetch(`${API_URL}/api/user/subscription/purchase`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        subscription_id: subscriptionId,
+                        name: subscriptionName,
+                        price: price
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showResult(`
+                        <h3><i class="fas fa-check-circle"></i> Абонемент приобретен!</h3>
+                        <p><strong>Тип:</strong> ${subscriptionName}</p>
+                        <p><strong>Цена:</strong> ${price} руб.</p>
+                        <p><strong>ID абонемента:</strong> #${result.subscription_id}</p>
+                        <p><strong>Действует до:</strong> ${result.valid_until}</p>
+                        <p>Абонемент активирован и готов к использованию!</p>
+                    `, 'success');
+                    
+                    // Закрываем модальное окно
+                    closeModal();
+                    
+                    // Обновляем личный кабинет
+                    loadUserCabinet();
+                    
+                    // Обновляем список тарифов
+                    loadTariffs();
+                } else {
+                    showResult(`<i class="fas fa-exclamation-triangle"></i> ${result.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Ошибка покупки абонемента:', error);
+                showResult('<i class="fas fa-exclamation-triangle"></i> Ошибка соединения с сервером', 'error');
+            }
+        }
+        
+        // Использование бонусов
+        async function useBonuses() {
+            const amount = parseFloat(prompt('Введите сумму бонусов для использования (в рублях):', '10'));
+            
+            if (!amount || amount <= 0) {
+                showResult('Введите корректную сумму', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/user/bonus/use`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: amount
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showResult(`<i class="fas fa-check-circle"></i> ${result.message}`, 'success');
+                    loadUserCabinet();
+                } else {
+                    showResult(`<i class="fas fa-exclamation-triangle"></i> ${result.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Ошибка использования бонусов:', error);
+                showResult('<i class="fas fa-exclamation-triangle"></i> Ошибка соединения с сервером', 'error');
+            }
+        }
+        
+        // Открытие модального окна для покупки абонемента
+        function openSubscriptionModal(subscriptionId = null, subscriptionName = null, price = null) {
+            const modal = document.getElementById('subscriptionModal');
+            const optionsContainer = document.getElementById('subscriptionOptions');
+            
+            if (subscriptionId) {
+                // Покупка конкретного абонемента
+                optionsContainer.innerHTML = `
+                    <div class="subscription-option selected" onclick="selectSubscription('${subscriptionId}', '${subscriptionName}', ${price})">
+                        <h3>${subscriptionName}</h3>
+                        <div class="subscription-price">${price} руб.</div>
+                        <p>${subscriptionId === '5000' ? '80 часов в месяц' : '160 часов в месяц'}</p>
+                        <p><i class="fas fa-check-circle"></i> Выбрано</p>
+                    </div>
+                `;
+                selectedSubscription = { id: subscriptionId, name: subscriptionName, price: price };
+            } else {
+                // Показать все варианты абонементов
+                optionsContainer.innerHTML = `
+                    <div class="subscription-option" onclick="selectSubscription('5000', 'Месячный абонемент', 5000)">
+                        <h3>Месячный абонемент</h3>
+                        <div class="subscription-price">5,000 руб.</div>
+                        <p>80 часов в месяц</p>
+                        <p>Экономия до 40%</p>
+                    </div>
+                    <div class="subscription-option" onclick="selectSubscription('9000', 'Месячный абонемент Премиум', 9000)">
+                        <h3>Месячный абонемент Премиум</h3>
+                        <div class="subscription-price">9,000 руб.</div>
+                        <p>160 часов в месяц</p>
+                        <p>Экономия до 50%</p>
+                        <p><span class="feature-badge new-badge">Выгодно</span></p>
+                    </div>
+                `;
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        // Выбор абонемента
+        function selectSubscription(id, name, price) {
+            selectedSubscription = { id, name, price };
+            
+            // Убираем выделение у всех опций
+            document.querySelectorAll('.subscription-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Добавляем выделение выбранной опции
+            event.currentTarget.classList.add('selected');
+        }
+        
+        // Покупка выбранного абонемента
+        function purchaseSelectedSubscription() {
+            if (selectedSubscription) {
+                purchaseSubscription(selectedSubscription.id, selectedSubscription.name, selectedSubscription.price);
+            } else {
+                showResult('Выберите абонемент', 'error');
+            }
+        }
+        
+        // Закрытие модального окна
+        function closeModal() {
+            document.getElementById('subscriptionModal').style.display = 'none';
+            selectedSubscription = null;
+        }
+        
+        // Ваши существующие функции с небольшими изменениями
+        function showCafeInfo() {
+            const cafeSelect = document.getElementById('cafe');
+            const cafeInfo = document.getElementById('cafeInfo');
+            
+            if (cafeSelect.value && cafesData[cafeSelect.value]) {
+                const cafe = cafesData[cafeSelect.value];
+                cafeInfo.innerHTML = `
+                    <p><strong>${cafe.name}</strong></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Адрес: ${cafe.address}</p>
+                    <p><i class="fas fa-phone"></i> Телефон: ${cafe.phone}</p>
+                    <p><i class="fas fa-users"></i> Вместимость: ${cafe.capacity}</p>
+                    <p><i class="fas fa-clock"></i> Часы работы: ${cafe.workHours}</p>
+                    <p><i class="fas fa-info-circle"></i> Особенности: ${cafe.description}</p>
+                `;
+                cafeInfo.style.display = 'block';
+            } else {
+                cafeInfo.style.display = 'none';
+            }
+        }
+        
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('date');
+            if (dateInput) {
+                dateInput.min = today;
+                dateInput.value = today;
+            }
+        }
+        
+        function updateEndTimeOptions() {
+            const startSelect = document.getElementById('startTime');
+            const endSelect = document.getElementById('endTime');
+            const startTime = startSelect.value;
+            
+            if (!startTime) return;
+            
+            // Очищаем текущие опции (кроме первой)
+            endSelect.innerHTML = '<option value="">-- Выберите время --</option>';
+            
+            // Время начала в часах
+            const startHour = parseInt(startTime.split(':')[0]);
+            
+            // Добавляем опции с шагом в 1 час, начиная со следующего часа
+            for (let hour = startHour + 1; hour <= 22; hour++) {
+                const time = `${hour.toString().padStart(2, '0')}:00`;
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                endSelect.appendChild(option);
+            }
+        }
+        
+        function calculateDuration() {
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            const durationDisplay = document.getElementById('durationDisplay');
+            const durationValue = document.getElementById('durationValue');
+            
+            if (startTime && endTime) {
+                const startHour = parseInt(startTime.split(':')[0]);
+                const endHour = parseInt(endTime.split(':')[0]);
+                const duration = endHour - startHour;
+                
+                if (duration > 0) {
+                    let hourText = 'час';
+                    if (duration >= 2 && duration <= 4) hourText = 'часа';
+                    if (duration >= 5) hourText = 'часов';
+                    
+                    durationValue.textContent = `${duration} ${hourText}`;
+                    durationDisplay.style.display = 'block';
+                    return duration;
+                } else {
+                    durationValue.textContent = "Некорректное время";
+                    durationDisplay.style.display = 'block';
+                    return 0;
+                }
+            } else {
+                durationDisplay.style.display = 'none';
+                return 0;
+            }
+        }
+        
+        function calculateCost() {
+            const duration = calculateDuration();
+            const tariffSelect = document.getElementById('tariff');
+            const costDisplay = document.getElementById('costDisplay');
+            const costValue = document.getElementById('costValue');
+            
+            if (!tariffSelect.value || duration <= 0) {
+                costDisplay.style.display = 'none';
+                return 0;
+            }
+            
+            const tariffPrice = parseInt(tariffSelect.value);
+            let totalAmount = 0;
+            
+            if (tariffPrice === 1500) {
+                totalAmount = 1500;
+            } else if (tariffPrice === 250) {
+                totalAmount = tariffPrice * duration;
+            } else if (tariffPrice === 5000 || tariffPrice === 9000) {
+                totalAmount = tariffPrice;
+            }
+            
+            costValue.textContent = `${totalAmount} руб.`;
+            costDisplay.style.display = 'block';
+            
+            return totalAmount;
+        }
+        
+        function clearForm() {
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('comment').value = '';
+            document.getElementById('durationDisplay').style.display = 'none';
+            document.getElementById('costDisplay').style.display = 'none';
+        }
+        
+        function showResult(message, type) {
+            const result = document.getElementById('result');
+            if (result) {
+                result.innerHTML = message;
+                result.className = 'result ' + type;
+                
+                // Автоматическое скрытие через 8 секунд
+                setTimeout(() => {
+                    result.className = 'result';
+                }, 8000);
+            }
+        }
+        
+        function showLoading(container, message) {
+            if (container) {
+                container.innerHTML = `
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function showError(container, message) {
+            if (container) {
+                container.innerHTML = `
+                    <div class="error" style="padding: 20px; border-radius: 8px;">
+                        <p><i class="fas fa-exclamation-triangle"></i> ${message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('subscriptionModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
