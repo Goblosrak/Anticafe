@@ -1,47 +1,38 @@
-# Компилятор
+# Makefile для Антикафе Чилл
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -O2
-LDFLAGS = 
-
-# Определяем ОС
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Linux)
-    # Linux
-    CXXFLAGS += -I/usr/include/jsoncpp
-    LDFLAGS += -ljsoncpp -lpthread
-endif
-ifeq ($(UNAME_S),Darwin)
-    # macOS
-    CXXFLAGS += -I/opt/homebrew/include
-    LDFLAGS += -L/opt/homebrew/lib -ljsoncpp -lpthread
-endif
-ifeq ($(OS),Windows_NT)
-    # Windows
-    CXXFLAGS += -D_WIN32_WINNT=0x0601
-    LDFLAGS = -lws2_32 -ljsoncpp
-endif
-
-# Цели
+CXXFLAGS = -std=c++17 -Wall -Wextra -pthread
+LDFLAGS = -pthread
 TARGET = antycafe_server
-SRCS = main.cpp
-OBJS = $(SRCS:.cpp=.o)
+SRC_DIR = backend/server
+BUILD_DIR = build
+SRC = $(SRC_DIR)/main.cpp
+OBJ = $(BUILD_DIR)/main.o
 
-# Правила
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+$(TARGET): $(OBJ)
+	$(CXX) $(OBJ) $(LDFLAGS) -o $(BUILD_DIR)/$(TARGET)
 
-%.o: %.cpp
+$(BUILD_DIR)/main.o: $(SRC)
+	@mkdir -p $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(BUILD_DIR)/*
 
 run: $(TARGET)
-	./$(TARGET)
+	@echo "Запуск сервера..."
+	@cd $(BUILD_DIR) && ./$(TARGET)
 
-# Зависимости
-main.o: main.cpp
+install-deps-ubuntu:
+	sudo apt update
+	sudo apt install -y g++ cmake
 
-.PHONY: all clean run
+install-deps-fedora:
+	sudo dnf install -y gcc-c++ cmake
+
+install-deps-arch:
+	sudo pacman -Syu
+	sudo pacman -S gcc cmake
+
+.PHONY: all clean run install-deps
